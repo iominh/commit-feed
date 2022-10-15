@@ -2,6 +2,10 @@ import { defineConfig } from "cypress";
 import customViteConfig from "./vite.config";
 
 export default defineConfig({
+  env: {
+    CYPRESS_BASE_URL: 'http://127.0.0.1:5173/'
+  },
+
   component: {
     devServer: {
       framework: "react",
