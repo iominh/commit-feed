@@ -12,7 +12,7 @@ jobs:
         with:
           browser: chrome
           build: yarn build
-          start: yarn start
+          preview: yarn preview
           wait-on: ${{ github.event.deployment_status.target_url }}
         env:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
