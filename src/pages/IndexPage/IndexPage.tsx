@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -68,7 +68,7 @@ function IndexPage() {
     });
   }
 
-  const handleChangeUser = React.useCallback(
+  const handleChangeUser = useCallback(
     (value: string) => {
       if (!value.trim()) {
         setUsers([]);
