@@ -39,26 +39,30 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
   // Use light theme by default
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
+  const updateHtmlThemeClass = (theme: string) => {
+    if (theme === 'dark') {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
+  }
+
   // Invoke changeTheme when switch has been clicked
   const changeTheme = () => {
     setIsDarkTheme(!isDarkTheme);
     const newTheme = !isDarkTheme ? 'dark' : 'light';
     localStorage.setItem('theme', newTheme);
-
-    if (newTheme === 'dark') {
-      document.documentElement.classList.remove('light');
-      document.documentElement.classList.remove('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.remove('light');
-    }
+    updateHtmlThemeClass(newTheme);
   };
 
   useEffect(() => {
-    const existingPreference = localStorage.getItem('theme');
+    const existingPreference = localStorage.getItem('theme') ?? 'light';
     if (existingPreference) {
       setIsDarkTheme(existingPreference === 'dark')
     }
+    updateHtmlThemeClass(existingPreference);
   }, []);
 
   return (

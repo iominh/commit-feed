@@ -6,7 +6,6 @@ import IndexPage from "@/pages/IndexPage/IndexPage";
 import CommitsPage from "@/pages/CommitsPage/CommitsPage";
 import "@fontsource/roboto";
 import "./index.css";
-import { CssBaseline } from "@mui/material";
 
 const router = createBrowserRouter([
   {

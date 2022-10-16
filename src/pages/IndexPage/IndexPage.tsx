@@ -21,7 +21,7 @@ function IndexPage() {
 
   const [showUsers, setShowUsers] = useState(false);
   const [showRepos, setShowRepos] = useState(false);
-  const [userError, setUserError] = React.useState("");
+  const [error, setError] = useState<Error | null>(null);
 
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [isLoadingRepos, setIsLoadingRepos] = useState(false);
@@ -31,26 +31,26 @@ function IndexPage() {
 
   useEffect(() => {
     document.title = `Commit Feed`;
-    if (user && userError && users.length > 0) {
-      setUserError("");
+    if (user && error && users.length > 0) {
+      setError(null);
     }
 
-    if (repos.length > 0 && userError) {
+    if (repos.length > 0 && error) {
       setRepos([]);
     }
-  }, [location, user, userError, users, repos]);
+  }, [location, user, error, users, repos]);
 
   useEffect(() => {
     if (
       users.length > 0 &&
       !showUsers &&
       repos.length === 0 &&
-      !userError &&
+      !error &&
       user
     ) {
       setShowUsers(true);
     }
-  }, [users, showUsers, user, userError, repos]);
+  }, [users, showUsers, user, error, repos]);
 
   const handleChangeUser = React.useCallback(
     (value: string) => {
@@ -66,9 +66,9 @@ function IndexPage() {
           setIsLoadingUsers(false);
           const newUsers = data.items.map((item: { login: any }) => item.login);
           setUsers(newUsers);
-  
+
           if (data.items.length === 0) {
-            setUserError("User not found");
+            setError(new Error("User not found"));
             if (user && repo) {
               setSearchParams({ user });
             }
@@ -96,6 +96,8 @@ function IndexPage() {
       navigate(`/${user}/${repo}`);
     }
   };
+
+  if (error) throw error;
 
   return (
     <PageContainer centered>
@@ -133,14 +135,18 @@ function IndexPage() {
               setSearchParams({ user: newValue || "" });
               if (!isLoadingRepos) {
                 setIsLoadingRepos(true);
-                getRepos(newValue).then((data: any) => {
-                  setIsLoadingRepos(false);
-                  setRepos(data.map((item: { name: any }) => item.name));
-                });
+                getRepos(newValue)
+                  .then((data: any) => {
+                    setIsLoadingRepos(false);
+                    setRepos(data.map((item: { name: any }) => item.name));
+                  })
+                  .catch((e) => {
+                    throw new Error(e);
+                  });
               }
             } else {
               setSearchParams({});
-              setUserError("");
+              setError(null);
             }
           }}
           renderOption={(props, option: string, { inputValue }) => {
@@ -153,7 +159,7 @@ function IndexPage() {
                     <span
                       key={index}
                       style={{
-                        fontWeight: part.highlight ? 700 : 400
+                        fontWeight: part.highlight ? 700 : 400,
                       }}
                     >
                       {part.text}
@@ -217,11 +223,7 @@ function IndexPage() {
           />
         )}
         {Boolean(user && repos.length > 0) && (
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={Boolean(userError)}
-          >
+          <Button type="submit" variant="contained" disabled={Boolean(error)}>
             Submit
           </Button>
         )}

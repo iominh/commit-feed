@@ -9,6 +9,15 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.dark {
+  color-scheme: dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
+
 header a {
   color: white;
 }
