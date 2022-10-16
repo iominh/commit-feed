@@ -61,26 +61,30 @@ function IndexPage() {
 
       setIsLoadingUsers(true);
 
-      getUsers(value).then((data) => {
-        setIsLoadingUsers(false);
-        const newUsers = data.items.map((item: { login: any }) => item.login);
-        setUsers(newUsers);
-
-        if (data.items.length === 0) {
-          setUserError("User not found");
-          if (user && repo) {
-            setSearchParams({ user });
+      try {
+        getUsers(value).then((data) => {
+          setIsLoadingUsers(false);
+          const newUsers = data.items.map((item: { login: any }) => item.login);
+          setUsers(newUsers);
+  
+          if (data.items.length === 0) {
+            setUserError("User not found");
+            if (user && repo) {
+              setSearchParams({ user });
+            }
+          } else if (user && !isLoadingRepos) {
+            setSearchParams({ user: value, ...(repo ? { repo } : {}) });
+            setIsLoadingRepos(true);
+            getRepos(newUsers[0]).then((data) => {
+              setIsLoadingRepos(false);
+              const newRepos = data.map((item: { name: any }) => item.name);
+              setRepos(newRepos);
+            });
           }
-        } else if (user && !isLoadingRepos) {
-          setSearchParams({ user: value, ...(repo ? { repo } : {}) });
-          setIsLoadingRepos(true);
-          getRepos(newUsers[0]).then((data) => {
-            setIsLoadingRepos(false);
-            const newRepos = data.map((item: { name: any }) => item.name);
-            setRepos(newRepos);
-          });
-        }
-      });
+        });
+      } catch (e) {
+        throw e;
+      }
     },
     [isLoadingRepos, repo, user]
   );

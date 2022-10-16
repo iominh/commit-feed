@@ -14,8 +14,8 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorPage from "pages/ErrorPage/ErrorPage";
 import { useEffect } from "react";
+import ErrorFallback from "@/components/ErrorFallback/ErrorFallback";
 
 // Define theme settings
 const light = createTheme({
@@ -36,13 +36,22 @@ export interface AppProps {
 }
 
 const PageContainer = ({ children, centered = false }: AppProps) => {
-  // The light theme is used by default
+  // Use light theme by default
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
-  // This function is triggered when the Switch component is toggled
+  // Invoke changeTheme when switch has been clicked
   const changeTheme = () => {
     setIsDarkTheme(!isDarkTheme);
-    localStorage.setItem('theme', !isDarkTheme ? 'dark' : 'light');
+    const newTheme = !isDarkTheme ? 'dark' : 'light';
+    localStorage.setItem('theme', newTheme);
+
+    if (newTheme === 'dark') {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove('light');
+    }
   };
 
   useEffect(() => {
@@ -72,7 +81,7 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
           </Toolbar>
         </AppBar>
       </Box>
-      <ErrorBoundary FallbackComponent={ErrorPage}>
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
         {!centered ? (
           <>{children}</>
         ) : (
