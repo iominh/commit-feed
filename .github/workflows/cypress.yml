@@ -12,10 +12,17 @@ jobs:
         # is simply inserted as a string into the command
         run: |
           echo '${{ secrets.CYPRESS_ENV_CI }}' > cypress.env.json
-      - name: Run Cypress
+      - name: Run Cypress Chrome
         uses: cypress-io/github-action@v4
         with:
           browser: chrome
+          build: yarn build
+          start: yarn preview
+          wait-on: ${{ github.event.deployment_status.target_url }}
+      - name: Run Cypress Chrome
+        uses: cypress-io/github-action@v4
+        with:
+          browser: firefox
           build: yarn build
           start: yarn preview
           wait-on: ${{ github.event.deployment_status.target_url }}
