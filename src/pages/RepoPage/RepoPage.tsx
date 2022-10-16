@@ -2,16 +2,19 @@ import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 function RepoPage() {
-    let location = useLocation();
+  let location = useLocation();
 
-    useEffect(() => {
-        console.log('repo page', location);
-    }, [location])
+  useEffect(() => {
+    console.log("repo page", location);
+    document.title = `${location.pathname ?? ''} - Commit Feed`;
+  }, [location]);
 
-    return <div>
-        <Link to="/">Go Back</Link>
-        Repo page
+  return (
+    <div>
+      <h1> Repo page</h1>
+      <Link to="/">Go Back</Link>
     </div>
+  );
 }
 
 export default RepoPage;

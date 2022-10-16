@@ -4,6 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 function IndexPage() {
   const ref = useRef(null);
   const navigate = useNavigate();
+  let location = useLocation();
+
+  useEffect(() => {
+    console.log("repo page", location);
+    document.title = `Commit Feed`;
+  }, [location]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
