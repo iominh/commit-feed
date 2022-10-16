@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "pages/ErrorPage/ErrorPage";
+import { useEffect } from "react";
 
 // Define theme settings
 const light = createTheme({
@@ -41,10 +42,19 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
   // This function is triggered when the Switch component is toggled
   const changeTheme = () => {
     setIsDarkTheme(!isDarkTheme);
+    localStorage.setItem('theme', !isDarkTheme ? 'dark' : 'light');
   };
+
+  useEffect(() => {
+    const existingPreference = localStorage.getItem('theme');
+    if (existingPreference) {
+      setIsDarkTheme(existingPreference === 'dark')
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={isDarkTheme ? dark : light}>
+      <CssBaseline />
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed">
           <Toolbar>
