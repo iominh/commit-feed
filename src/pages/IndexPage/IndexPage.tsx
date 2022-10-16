@@ -15,10 +15,6 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { getUsers, getRepos } from "../../utils/api";
 
-type UserOption = {
-  label: string;
-  id: number;
-};
 
 function IndexPage() {
   const ref = useRef(null);
@@ -85,7 +81,8 @@ function IndexPage() {
           setIsLoadingRepos(true);
           getRepos(newUsers[0]).then((data) => {
             setIsLoadingRepos(false);
-            setRepos(data.map((item: { name: any }) => item.name));
+            const newRepos = data.map((item: { name: any }) => item.name);
+            setRepos(newRepos);
           });
         }
       });
@@ -120,6 +117,10 @@ function IndexPage() {
           autoComplete
           autoHighlight
           openOnFocus
+          noOptionsText={isLoadingUsers ? 'Loading...' : 'No options found'}
+          open={!isLoadingUsers && showUsers && users.length > 0}
+          onOpen={() => setShowUsers(true)}
+          onClose={() => setShowUsers(false)}
           loading={isLoadingUsers}
           id="userInput"
           value={user}
@@ -171,6 +172,9 @@ function IndexPage() {
             disablePortal
             autoComplete
             autoHighlight
+            openOnFocus
+            noOptionsText={isLoadingRepos ? 'Loading...' : 'No options found'}
+            open={!isLoadingRepos && showRepos && repos.length > 0}
             id="repoInput"
             value={repo}
             onOpen={() => setShowRepos(true)}
@@ -186,7 +190,7 @@ function IndexPage() {
               return option.localeCompare(value) === 0;
             }}
             options={repos}
-            sx={{ width: 300, marginTop: 4, marginBottom: 4 }}
+            sx={{ width: 300 }}
             renderInput={(params) => (
               <TextField {...params} label="Select Repo" />
             )}
