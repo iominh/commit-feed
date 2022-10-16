@@ -52,6 +52,11 @@ function IndexPage() {
     }
   }, [users, showUsers, user, error, repos]);
 
+  const handleError = (error: Error) => {
+    setError(error);
+    throw error;
+  };
+
   const handleChangeUser = React.useCallback(
     (value: string) => {
       if (!value.trim()) {
@@ -61,14 +66,17 @@ function IndexPage() {
 
       setIsLoadingUsers(true);
 
-      try {
-        getUsers(value).then((data) => {
+      getUsers(value)
+        .then((data) => {
+          if (data.message) {
+            handleError(data);
+          }
           setIsLoadingUsers(false);
           const newUsers = data.items.map((item: { login: any }) => item.login);
           setUsers(newUsers);
 
           if (data.items.length === 0) {
-            setError(new Error("User not found"));
+            handleError(new Error("User not found"));
             if (user && repo) {
               setSearchParams({ user });
             }
@@ -76,15 +84,18 @@ function IndexPage() {
             setSearchParams({ user: value, ...(repo ? { repo } : {}) });
             setIsLoadingRepos(true);
             getRepos(newUsers[0]).then((data) => {
+              if (data.message) {
+                handleError(data);
+              }
               setIsLoadingRepos(false);
               const newRepos = data.map((item: { name: any }) => item.name);
               setRepos(newRepos);
             });
           }
+        })
+        .catch((e: Error) => {
+          throw e;
         });
-      } catch (e) {
-        throw e;
-      }
     },
     [isLoadingRepos, repo, user]
   );
@@ -135,14 +146,13 @@ function IndexPage() {
               setSearchParams({ user: newValue || "" });
               if (!isLoadingRepos) {
                 setIsLoadingRepos(true);
-                getRepos(newValue)
-                  .then((data: any) => {
-                    setIsLoadingRepos(false);
-                    setRepos(data.map((item: { name: any }) => item.name));
-                  })
-                  .catch((e) => {
-                    throw new Error(e);
-                  });
+                getRepos(newValue).then((data: any) => {
+                  if (data.message) {
+                    setError(new Error(data));
+                  }
+                  setIsLoadingRepos(false);
+                  setRepos(data.map((item: { name: any }) => item.name));
+                });
               }
             } else {
               setSearchParams({});
