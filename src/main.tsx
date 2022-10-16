@@ -23,6 +23,7 @@ const router = createBrowserRouter([
   {
     path: "/:user/:repo",
     element: <CommitsPage />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

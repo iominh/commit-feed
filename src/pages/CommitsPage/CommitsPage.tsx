@@ -1,33 +1,165 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import Typography from "@mui/material/Typography";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Container from "@mui/material/Container";
+import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import { getCommits } from "../../utils/api";
 
-function CommitsPage() {
-  let location = useLocation();
-  let { user, repo } = useParams();
-  const [commits, setCommits] = useState([]);
-
-  useEffect(() => {
-    console.log("repo page", location);
-    document.title = `${location.pathname ?? ""} - Commit Feed`;
-  }, [location]);
-
-  // const { error, data } = useQuery(["commits"], () => {
-  //   return fetch(`https://api.github.com/repos/${user}/${repo}/commits?page=1`)
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       setCommits(res);
-  //       return res;
-  //     });
-  // });
-
-  return (
-    <div>
-      <h1>Repo page</h1>
-      <Link to="/">Go Back</Link>
-      <div>{JSON.stringify(commits, null, 2)}</div>
-    </div>
-  );
+interface CommitsType {
+  node_id: string;
+  html_url: string;
+  commit: {
+    message: string;
+    author: {
+      name: string;
+      date: string;
+    };
+  };
 }
 
-export default CommitsPage;
+export default function Feed() {
+  const location = useLocation();
+  const { user = "", repo = "" } = useParams();
+  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [data, setData] = useState<Array<CommitsType>>([]);
+  const [showButton, setShowButton] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    document.title = `${location.pathname ?? ""} - Commit Feed`;
+    getCommits(user, repo, currentPage)
+      .then((newData: CommitsType[]) => {
+        setIsLoading(false);
+        if (!Array.isArray(newData)) {
+          navigate("/does/not/exist");
+        }
+        if (newData.length > 0) {
+          setData([...(data || []), ...newData]);
+        }
+        if (newData.length < 30) {
+          setShowButton(false);
+        }
+      })
+      .catch(() => {
+        navigate("/does/not/exist");
+      });
+  }, [currentPage, location]);
+
+  if (data.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const handleOnClickLoadMore = () => {
+    setCurrentPage(currentPage + 1);
+    setIsLoading(true);
+  };
+
+  // useEffect(() => {
+  //   console.log("repo page", location);
+  //   // document.title = `${location.pathname ?? ""} - Commit Feed`;
+  // }, []);
+
+  return (
+    <Container maxWidth="xl">
+      <Typography variant="h3" component="div" gutterBottom>
+        Commit Feed
+      </Typography>
+      <Typography variant="h6" component="div" gutterBottom>
+        {`Showing results for ${user}/${repo}`}
+      </Typography>
+      <Stack
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableBody>
+              {data.map((item) => {
+                const date = new Date(item.commit.author.date);
+                const [month, day, year] = [
+                  date.getMonth(),
+                  date.getDate(),
+                  date.getFullYear(),
+                ];
+                const novotime = date.toLocaleString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                });
+                const formatedMonth = new Intl.DateTimeFormat("en-US", {
+                  month: "long",
+                }).format(month);
+                return (
+                  <TableRow
+                    key={item.node_id}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                    }}
+                  >
+                    <TableCell>{`${formatedMonth} ${day}, ${year} at ${novotime}`}</TableCell>
+                    <TableCell>
+                      <Link href={item.html_url} target="_blank">
+                        {item.commit.message}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{item.commit.author.name}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {showButton && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
+            <Button
+              variant="contained"
+              onClick={handleOnClickLoadMore}
+              disabled={isLoading}
+            >
+              Load More
+            </Button>
+          </Box>
+        )}
+        <Link to="/">
+          <Button variant="contained">Go Back</Button>
+        </Link>
+      </Stack>
+    </Container>
+  );
+}
