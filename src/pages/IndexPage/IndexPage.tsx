@@ -61,9 +61,8 @@ function IndexPage() {
       setUserQuery(e.target.value);
     }
   };
-  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 100);
+  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 300);
 
-  if (isLoading) return <div>Loading..."</div>;
   if (error) return <>An error has occurred: ${error || ""}</>;
 
   console.log('render...', userNames, userQuery);
