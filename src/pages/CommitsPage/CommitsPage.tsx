@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import { getCommits } from "../../utils/api";
 import PageContainer from "@/containers/PageContainer/PageContainer";
 
@@ -135,6 +134,8 @@ export default function CommitsPage() {
               alignItems: "center",
               justifyContent: "center",
               height: "100%",
+              width: '100%',    
+              marginTop: '1rem'
             }}
           >
             <Button

@@ -45,7 +45,7 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
     <ThemeProvider theme={isDarkTheme ? dark : light}>
       <CssBaseline />
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <AppBar position="fixed">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Link to="/">Commit Feed</Link>
@@ -55,7 +55,7 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
                 control={
                   <Switch checked={isDarkTheme} onChange={changeTheme} />
                 }
-                label="Dark Theme"
+                label="Toggle Theme"
               />
             </FormGroup>
           </Toolbar>
