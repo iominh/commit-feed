@@ -14,6 +14,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { getCommits } from "../../utils/api";
+import PageContainer from "@/containers/PageContainer/PageContainer";
 
 interface CommitsType {
   node_id: string;
@@ -27,7 +28,7 @@ interface CommitsType {
   };
 }
 
-export default function Feed() {
+export default function CommitsPage() {
   const location = useLocation();
   const { user = "", repo = "" } = useParams();
   const navigate = useNavigate();
@@ -82,84 +83,86 @@ export default function Feed() {
   // }, []);
 
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h3" component="div" gutterBottom>
-        Commit Feed
-      </Typography>
-      <Typography variant="h6" component="div" gutterBottom>
-        {`Showing results for ${user}/${repo}`}
-      </Typography>
-      <Stack
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100%",
-        }}
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-      >
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableBody>
-              {data.map((item) => {
-                const date = new Date(item.commit.author.date);
-                const [month, day, year] = [
-                  date.getMonth(),
-                  date.getDate(),
-                  date.getFullYear(),
-                ];
-                const novotime = date.toLocaleString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                });
-                const formatedMonth = new Intl.DateTimeFormat("en-US", {
-                  month: "long",
-                }).format(month);
-                return (
-                  <TableRow
-                    key={item.node_id}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                    }}
-                  >
-                    <TableCell>{`${formatedMonth} ${day}, ${year} at ${novotime}`}</TableCell>
-                    <TableCell>
-                      <Link to={item.html_url} target="_blank">
-                        {item.commit.message}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{item.commit.author.name}</TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {showButton && (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-            }}
-          >
-            <Button
-              variant="contained"
-              onClick={handleOnClickLoadMore}
-              disabled={isLoading}
+    <PageContainer>
+      <Container maxWidth="xl">
+        <Stack
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+          spacing={2}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography variant="h3" component="div" gutterBottom>
+            Commit Feed
+          </Typography>
+          <Typography variant="h6" component="div" gutterBottom>
+            {`Showing results for ${user}/${repo}`}
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableBody>
+                {data.map((item) => {
+                  const date = new Date(item.commit.author.date);
+                  const [month, day, year] = [
+                    date.getMonth(),
+                    date.getDate(),
+                    date.getFullYear(),
+                  ];
+                  const novotime = date.toLocaleString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
+                    hour12: true,
+                  });
+                  const formatedMonth = new Intl.DateTimeFormat("en-US", {
+                    month: "long",
+                  }).format(month);
+                  return (
+                    <TableRow
+                      key={item.node_id}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>{`${formatedMonth} ${day}, ${year} at ${novotime}`}</TableCell>
+                      <TableCell>
+                        <Link to={item.html_url} target="_blank">
+                          {item.commit.message}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{item.commit.author.name}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {showButton && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+              }}
             >
-              Load More
-            </Button>
-          </Box>
-        )}
-        <Link to="/">
-          <Button variant="contained">Go Back</Button>
-        </Link>
-      </Stack>
-    </Container>
+              <Button
+                variant="contained"
+                onClick={handleOnClickLoadMore}
+                disabled={isLoading}
+              >
+                Load More
+              </Button>
+            </Box>
+          )}
+          <Link to="/">
+            <Button variant="contained">Go Back</Button>
+          </Link>
+        </Stack>
+      </Container>
+    </PageContainer>
   );
 }
