@@ -1,16 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
-import CommitList from './components/CommitList/CommitList'
+import React, { useState } from "react";
+import { Router, Route } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
+
+
 
   return (
-    <div className="App">
-      <CommitList />
-    </div>
-  )
+    <Router>
+      <div>
+        
+      </div>
+            <Switch>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+    </Router>
+  );
 }
 
-export default App
+export default App;
