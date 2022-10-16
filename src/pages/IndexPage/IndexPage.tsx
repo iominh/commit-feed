@@ -1,7 +1,7 @@
 function IndexPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e);
+    console.log('submit', e);
   };
 
   const handleUserChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -19,6 +19,7 @@ function IndexPage() {
       <form onSubmit={handleSubmit}>
         <input onChange={handleUserChange}></input>
         <input onChange={handleRepoChange}></input>
+        <button>Submit</button>
       </form>
     </div>
   );
