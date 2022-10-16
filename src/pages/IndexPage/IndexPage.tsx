@@ -57,8 +57,10 @@ function IndexPage() {
   };
 
   const onKeyDownUser = (e: any) => {
-    console.log(e);
-    setUserQuery(e.target.value);
+    console.log(e.key);
+    if (/\w/gi.test(e.target.value)) {
+      setUserQuery(e.target.value);
+    }
   };
   const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 100);
 
@@ -67,22 +69,18 @@ function IndexPage() {
 
   return (
     <div ref={ref}>
-      <form onSubmit={handleSubmit}>
-        <Autocomplete
-          disablePortal
-          id="userInput"
-          value={userQuery}
-          onKeyDown={debouncedOnKeyDownUser}
-          isOptionEqualToValue={(option: any, value: string) => {
-            return option.label.includes(value);
-          }}
-          options={userNames}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Username" />}
-        />
-
-        <button>Submit</button>
-      </form>
+      <Autocomplete
+        disablePortal
+        id="userInput"
+        value={userQuery}
+        onKeyDown={debouncedOnKeyDownUser}
+        isOptionEqualToValue={(option: any, value: string) => {
+          return option.label.includes(value);
+        }}
+        options={userNames}
+        sx={{ width: 300 }}
+        renderInput={(params) => <TextField {...params} label="Username" />}
+      />
     </div>
   );
 }
