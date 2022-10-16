@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
-function RepoPage() {
+function CommitsPage() {
   let location = useLocation();
   let { id, user } = useParams();
   const [commits, setCommits] = useState([]);
@@ -30,4 +30,4 @@ function RepoPage() {
   );
 }
 
-export default RepoPage;
+export default CommitsPage;
