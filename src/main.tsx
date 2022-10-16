@@ -6,6 +6,14 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import IndexPage from "./pages/IndexPage/IndexPage";
 import RepoPage from "./pages/RepoPage/RepoPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,7 +30,9 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <ThemeProvider theme={darkTheme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );

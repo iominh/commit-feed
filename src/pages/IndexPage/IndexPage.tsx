@@ -3,11 +3,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { useQuery } from "@tanstack/react-query";
+import useDebounce from "../../hooks/useDebounce";
 
 type UserOption = {
   label: string;
   id: number;
-}
+};
 
 function IndexPage() {
   const ref = useRef(null);
@@ -56,12 +57,13 @@ function IndexPage() {
   };
 
   const onKeyDownUser = (e: any) => {
-    console.log(e.key);
+    console.log(e);
     setUserQuery(e.target.value);
   };
+  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 100);
 
-  if (isLoading) return "Loading...";
-  // if (error) return `An error has occurred: ${error || ""}`;
+  if (isLoading) return <div>Loading..."</div>;
+  if (error) return <>An error has occurred: ${error || ""}</>;
 
   return (
     <div ref={ref}>
@@ -70,7 +72,7 @@ function IndexPage() {
           disablePortal
           id="userInput"
           value={userQuery}
-          onKeyDown={onKeyDownUser}
+          onKeyDown={debouncedOnKeyDownUser}
           isOptionEqualToValue={(option: any, value: string) => {
             return option.label.includes(value);
           }}
