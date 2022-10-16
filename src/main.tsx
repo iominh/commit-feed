@@ -5,7 +5,7 @@ import "./index.css";
 import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import IndexPage from "./pages/IndexPage/IndexPage";
 import RepoPage from "./pages/RepoPage/RepoPage";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -17,9 +17,12 @@ const router = createBrowserRouter([
     element: <RepoPage />,
   },
 ]);
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
