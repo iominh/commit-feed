@@ -3,7 +3,6 @@ import { ReactElement, useState } from "react";
 import {
   AppBar,
   Box,
-  Button,
   Toolbar,
   Switch,
   FormGroup,
@@ -13,9 +12,7 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-import { ErrorBoundary } from "react-error-boundary";
 import { useEffect } from "react";
-import ErrorFallback from "@/components/ErrorFallback/ErrorFallback";
 
 // Define theme settings
 const light = createTheme({
@@ -40,27 +37,27 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   const updateHtmlThemeClass = (theme: string) => {
-    if (theme === 'dark') {
-      document.documentElement.classList.remove('light');
-      document.documentElement.classList.add('dark');
+    if (theme === "dark") {
+      document.documentElement.classList.remove("light");
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
     }
-  }
+  };
 
   // Invoke changeTheme when switch has been clicked
   const changeTheme = () => {
     setIsDarkTheme(!isDarkTheme);
-    const newTheme = !isDarkTheme ? 'dark' : 'light';
-    localStorage.setItem('theme', newTheme);
+    const newTheme = !isDarkTheme ? "dark" : "light";
+    localStorage.setItem("theme", newTheme);
     updateHtmlThemeClass(newTheme);
   };
 
   useEffect(() => {
-    const existingPreference = localStorage.getItem('theme') ?? 'light';
+    const existingPreference = localStorage.getItem("theme") ?? "light";
     if (existingPreference) {
-      setIsDarkTheme(existingPreference === 'dark')
+      setIsDarkTheme(existingPreference === "dark");
     }
     updateHtmlThemeClass(existingPreference);
   }, []);
@@ -85,23 +82,21 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
           </Toolbar>
         </AppBar>
       </Box>
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        {!centered ? (
-          <>{children}</>
-        ) : (
-          <Box
-            p={4}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            {children}
-          </Box>
-        )}
-      </ErrorBoundary>
+      {!centered ? (
+        <>{children}</>
+      ) : (
+        <Box
+          p={4}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          {children}
+        </Box>
+      )}
     </ThemeProvider>
   );
 };
