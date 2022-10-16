@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ErrorPage from "./pages/ErrorPage/ErrorPage";
-import IndexPage from "./pages/IndexPage/IndexPage";
-import CommitsPage from "./pages/CommitsPage/CommitsPage";
-import "@fontsource/roboto"; // Loading Roboto font. MUI was designed with this font in mind.
+import ErrorPage from "@/pages/ErrorPage/ErrorPage";
+import IndexPage from "@/pages/IndexPage/IndexPage";
+import CommitsPage from "@/pages/CommitsPage/CommitsPage";
+import "@fontsource/roboto";
 import "./index.css";
-import PageContainer from "./containers/PageContainer/PageContainer";
+import { CssBaseline } from "@mui/material";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +23,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
+    <CssBaseline />
     <RouterProvider router={router} />
   </React.StrictMode>
 );

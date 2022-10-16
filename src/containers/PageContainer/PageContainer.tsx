@@ -45,7 +45,6 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
 
   return (
     <ThemeProvider theme={isDarkTheme ? dark : light}>
-      <CssBaseline />
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed">
           <Toolbar>
@@ -63,21 +62,23 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
           </Toolbar>
         </AppBar>
       </Box>
-      {!centered ? (
-        <>{children}</>
-      ) : (
-        <Box
-          p={4} 
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%"
-          }}
-        >
-          {children}
-        </Box>
-      )}
+      <ErrorBoundary FallbackComponent={ErrorPage}>
+        {!centered ? (
+          <>{children}</>
+        ) : (
+          <Box
+            p={4}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            {children}
+          </Box>
+        )}
+      </ErrorBoundary>
     </ThemeProvider>
   );
 };

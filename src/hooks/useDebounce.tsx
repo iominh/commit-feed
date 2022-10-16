@@ -1,6 +1,6 @@
 const useDebounce = (func: any, milliseconds: number) => {
   const time = milliseconds || 400;
-  let timer: any;
+  let timer: NodeJS.Timeout;
 
   return (event: any) => {
     if (timer) {
