@@ -1,23 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import useDebounce from "../../hooks/useDebounce";
-import CircularProgress from "@mui/material/CircularProgress";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import { getUsers, getRepos } from "../../utils/api";
-import parse from "autosuggest-highlight/parse";
-import match from "autosuggest-highlight/match";
-import PageContainer from "@/containers/PageContainer/PageContainer";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import useDebounce from '../../hooks/useDebounce';
+import CircularProgress from '@mui/material/CircularProgress';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import { getUsers, getRepos } from '../../utils/api';
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
+import PageContainer from '@/containers/PageContainer/PageContainer';
 
 function IndexPage() {
   const ref = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
-  const user = searchParams.get("user") || "";
-  const repo = searchParams.get("repo") || "";
+  const user = searchParams.get('user') || '';
+  const repo = searchParams.get('repo') || '';
 
   const [showUsers, setShowUsers] = useState(false);
   const [showRepos, setShowRepos] = useState(false);
@@ -42,11 +42,11 @@ function IndexPage() {
 
   useEffect(() => {
     if (
+      !error &&
+      user &&
       users.length > 0 &&
       !showUsers &&
-      repos.length === 0 &&
-      !error &&
-      user
+      repos.length === 0
     ) {
       setShowUsers(true);
     }
@@ -66,7 +66,7 @@ function IndexPage() {
       const newRepos = data.map((item: { name: any }) => item.name);
       setRepos(newRepos);
     });
-  }
+  };
 
   const handleChangeUser = useCallback(
     (value: string) => {
@@ -87,7 +87,7 @@ function IndexPage() {
           setUsers(newUsers);
 
           if (data.items.length === 0) {
-            handleError(new Error("User not found"));
+            handleError(new Error('User not found'));
             if (user && repo) {
               setSearchParams({ user });
             }
@@ -118,28 +118,28 @@ function IndexPage() {
     <PageContainer centered>
       <Stack
         ref={ref}
-        component="form"
+        component='form'
         onSubmit={handleSubmit}
         noValidate
-        autoComplete="off"
+        autoComplete='off'
         sx={{
-          height: "100%",
+          height: '100%',
         }}
         spacing={2}
-        justifyContent="center"
-        alignItems="center"
+        justifyContent='center'
+        alignItems='center'
       >
         <Autocomplete
           disablePortal
           autoComplete
           autoHighlight
           openOnFocus
-          noOptionsText={isLoadingUsers ? "Loading..." : "No options found"}
+          noOptionsText={isLoadingUsers ? 'Loading...' : 'No options found'}
           open={!isLoadingUsers && showUsers && users.length > 0}
           onOpen={() => setShowUsers(true)}
           onClose={() => setShowUsers(false)}
           loading={isLoadingUsers}
-          id="userInput"
+          id='userInput'
           value={user}
           options={users}
           onInputChange={(e: any, newValue: any) => {
@@ -147,7 +147,7 @@ function IndexPage() {
           }}
           onChange={(e: any, newValue: any) => {
             if (newValue) {
-              setSearchParams({ user: newValue || "" });
+              setSearchParams({ user: newValue || '' });
               if (!isLoadingRepos) {
                 setIsLoadingRepos(true);
                 loadRepos(newValue);
@@ -184,14 +184,14 @@ function IndexPage() {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Search User / Organization"
+              label='Search User / Organization'
               autoFocus
               inputProps={{
                 ...params.inputProps,
                 endadornment: (
                   <>
                     {isLoadingRepos ? (
-                      <CircularProgress color="inherit" size={20} />
+                      <CircularProgress color='inherit' size={20} />
                     ) : null}
                     {params.InputProps.endAdornment}
                   </>
@@ -207,15 +207,15 @@ function IndexPage() {
             autoComplete
             autoHighlight
             openOnFocus
-            noOptionsText={isLoadingRepos ? "Loading..." : "No options found"}
+            noOptionsText={isLoadingRepos ? 'Loading...' : 'No options found'}
             open={!isLoadingRepos && showRepos && repos.length > 0}
-            id="repoInput"
+            id='repoInput'
             value={repo}
             onOpen={() => setShowRepos(true)}
             onClose={() => setShowRepos(false)}
             onChange={(_, newValue: string | null) => {
               if (newValue) {
-                setSearchParams({ user, repo: newValue || "" });
+                setSearchParams({ user, repo: newValue || '' });
               } else {
                 setSearchParams({ user });
               }
@@ -226,12 +226,12 @@ function IndexPage() {
             options={repos}
             sx={{ width: 300 }}
             renderInput={(params) => (
-              <TextField {...params} label="Select Repo" />
+              <TextField {...params} label='Select Repo' />
             )}
           />
         )}
         {Boolean(user && repos.length > 0) && (
-          <Button type="submit" variant="contained" disabled={Boolean(error)}>
+          <Button type='submit' variant='contained' disabled={Boolean(error)}>
             Submit
           </Button>
         )}
