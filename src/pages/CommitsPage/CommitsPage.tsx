@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 function CommitsPage() {
   let location = useLocation();
-  let { id, user } = useParams();
+  let { user, repo } = useParams();
   const [commits, setCommits] = useState([]);
 
   useEffect(() => {
@@ -12,14 +12,14 @@ function CommitsPage() {
     document.title = `${location.pathname ?? ""} - Commit Feed`;
   }, [location]);
 
-  const { error, data } = useQuery(["commits"], () => {
-    return fetch(`https://api.github.com/repos/${user}/${id}/commits?page=1`)
-      .then((res) => res.json())
-      .then((res) => {
-        setCommits(res);
-        return res;
-      });
-  });
+  // const { error, data } = useQuery(["commits"], () => {
+  //   return fetch(`https://api.github.com/repos/${user}/${repo}/commits?page=1`)
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       setCommits(res);
+  //       return res;
+  //     });
+  // });
 
   return (
     <div>

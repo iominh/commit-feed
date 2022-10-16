@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import FormGroup from "@mui/material/FormGroup";
 import { useQuery } from "@tanstack/react-query";
 import useDebounce from "../../hooks/useDebounce";
+import CircularProgress from "@mui/material/CircularProgress";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import { getUsers, getRepos } from "../../utils/api";
 
 type UserOption = {
   label: string;
@@ -13,111 +17,174 @@ type UserOption = {
 
 function IndexPage() {
   const ref = useRef(null);
-  const [userNames, setUserNames] = useState([]);
-  const [repoOptions, setRepoOptions] = useState([]);
-  const [userQuery, setUserQuery] = useState("");
-  const [repoQuery, setRepoQuery] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  let { user, repo } = useParams();
 
-  const { error, data } = useQuery(["user", userQuery], () => {
-    if (!userQuery) return null;
-    return fetch(
-      `https://api.github.com/search/users?` +
-        new URLSearchParams({
-          q: userQuery,
-        })
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        const newUsers = res.items.map((item: any) => {
-          return {
-            label: item.login,
-          };
-        });
-        setUserNames(newUsers);
-        return newUsers;
-      });
-  });
+  const [showUsers, setShowUsers] = useState(false);
+  const [showRepos, setShowRepos] = useState(false);
+  const [userError, setUserError] = React.useState("");
 
-  const repoQueryResults = useQuery(["repos", userQuery], () => {
-    if (!userQuery) return null;
-    return fetch(`https://api.github.com/users/${userQuery}/repos`)
-      .then((res) => res.json())
-      .then((res) => {
-        const repos = res.map((item: any) => {
-          return {
-            label: item.name,
-          };
-        });
-        setRepoOptions(repos);
-        return repos;
-      });
-  });
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [isLoadingRepos, setIsLoadingRepos] = useState(false);
+
+  const [users, setUsers] = useState<string[]>([]);
+  const [repos, setRepos] = useState<string[]>([]);
 
   useEffect(() => {
     document.title = `Commit Feed`;
-  }, [location]);
-
-  const onKeyDownUser = (e: any) => {
-    if (/\w/gi.test(e.target.value)) {
-      setUserQuery(e.target.value);
+    if (user && userError && users.length > 0) {
+      setUserError("");
     }
-  };
-  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 300);
 
-  const onKeyDownRepo = (e: any) => {
-    if (/\w/gi.test(e.target.value)) {
-      setRepoQuery(e.target.value);
+    if (repos.length > 0 && userError) {
+      setRepos([]);
     }
-  };
-  const debouncedOnKeyDownRepo = useDebounce(onKeyDownRepo, 300);
+  }, [location, user, userError, users, repos]);
+
+  useEffect(() => {
+    if (
+      users.length > 0 &&
+      !showUsers &&
+      repos.length === 0 &&
+      !userError &&
+      user
+    ) {
+      setShowUsers(true);
+    }
+  }, [users, showUsers, user, userError, repos]);
+
+  // const onKeyDownUser = (e: any) => {
+  //   if (/\w/gi.test(e.target.value)) {
+  //     setUserQuery(e.target.value);
+  //   }
+  // };
+  // const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 300);
+
+  // const onKeyDownRepo = (e: any) => {
+  //   if (/\w/gi.test(e.target.value)) {
+  //     setRepoQuery(e.target.value);
+  //   }
+  // };
+  const handleChangeUser = React.useCallback(
+    (value: string) => {
+      if (!value.trim()) {
+        setUsers([]);
+        return null;
+      }
+
+      setIsLoadingUsers(true);
+
+      getUsers(value).then((data) => {
+        setIsLoadingUsers(false);
+        const newUsers = data.items.map((item: { login: any }) => item.login);
+        setUsers(newUsers);
+
+        if (data.items.length === 0) {
+          setUserError("User not found");
+          // if (user && repo) {
+          //   setUser(user);
+          // }
+        } else if (user && !isLoadingRepos) {
+          // setSearchParams({ user: value, ...(repo ? { repo } : {}) });
+          setIsLoadingRepos(true);
+          getRepos(newUsers[0]).then((data) => {
+            setIsLoadingRepos(false);
+            setRepos(data.map((item: { name: any }) => item.name));
+          });
+        }
+      });
+    },
+    [isLoadingRepos, repo, user]
+  );
+  const debouncedChangeHandler = useDebounce(handleChangeUser, 300);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    navigate(`/${userQuery}/${repoQuery}`);
-  }
-
-  if (error) return <>An error has occurred: ${error || ""}</>;
+    if (user && repo) {
+      navigate(`/${user}/${repo}`);
+    }
+  };
 
   return (
     <div ref={ref}>
-      <form onSubmit={handleSubmit}>
+      <Stack
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+        autoComplete="off"
+        sx={{
+          height: "100%",
+        }}
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+      >
         <Autocomplete
           disablePortal
+          autoComplete
+          autoHighlight
+          openOnFocus
+          loading={isLoadingRepos}
           id="userInput"
-          value={userQuery}
-          onKeyDown={debouncedOnKeyDownUser}
-          onInputChange={(e: any) => {
-            console.log('keyodwn', e);
+          value={user}
+          options={users}
+          onInputChange={(e: any, newValue: any) => {
+            debouncedChangeHandler(newValue);
           }}
-          isOptionEqualToValue={(option: any, value: string) => {
-            return option.label.includes(value);
+          isOptionEqualToValue={(option: string, value: string) => {
+            return option.localeCompare(value) === 0;
           }}
-          options={userNames}
           sx={{ width: 300 }}
           renderInput={(params) => (
-            <TextField {...params} label="Search User / Organization" />
+            <TextField
+              {...params}
+              label="Search User / Organization"
+              autoFocus
+              inputProps={{
+                ...params.inputProps,
+                endAdornment: (
+                  <>
+                    {isLoadingRepos ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              }}
+            />
           )}
         />
-        {userQuery.length > 0 && repoOptions.length > 0 && (
+
+        {Boolean(user && repos.length > 0) && (
           <Autocomplete
             disablePortal
+            autoComplete
+            autoHighlight
             id="repoInput"
-            value={repoQuery}
-            onKeyDown={debouncedOnKeyDownRepo}
-            isOptionEqualToValue={(option: any, value: string) => {
-              return option.label.includes(value);
+            value={repo}
+            onOpen={() => setShowRepos(true)}
+            onClose={() => setShowRepos(false)}
+            isOptionEqualToValue={(option: string, value: string) => {
+              return option.localeCompare(value) === 0;
             }}
-            options={repoOptions}
+            options={repos}
             sx={{ width: 300, marginTop: 4, marginBottom: 4 }}
             renderInput={(params) => (
               <TextField {...params} label="Select Repo" />
             )}
           />
         )}
-        {repoOptions.length > 0 && <button>Submit</button>}
-      </form>
+        {Boolean(user && repos.length > 0) && (
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={Boolean(userError)}
+          >
+            submit
+          </Button>
+        )}
+      </Stack>
     </div>
   );
 }
