@@ -3,7 +3,6 @@ interface CommitListProps {
 }
 
 const CommitList = ({ commits }: CommitListProps) => {
-  console.log(commits);
   return <div>CommitList</div>;
 };
 

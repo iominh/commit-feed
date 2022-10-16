@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test": "jest --watchAll --verbose"
+    "test": "jest --watchAll --verbose --collectCoverage"
   },
   "dependencies": {
     "react": "^18.2.0",
