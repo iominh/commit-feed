@@ -1,0 +1,17 @@
+.commitMessage {
+    max-width: 25%;
+}
+
+.table {
+    width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+    .commitMessage {
+        width: 40rem;
+    }
+
+    .table {
+        min-width: 600px;
+    }
+}

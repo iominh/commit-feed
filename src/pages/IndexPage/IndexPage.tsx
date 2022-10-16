@@ -218,7 +218,7 @@ function IndexPage() {
             variant="contained"
             disabled={Boolean(userError)}
           >
-            submit
+            Submit
           </Button>
         )}
       </Stack>

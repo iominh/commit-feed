@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,8 +12,10 @@ import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
 import { getCommits } from "../../utils/api";
 import PageContainer from "@/containers/PageContainer/PageContainer";
+import styles from './CommitsPage.module.css';
 
 interface CommitsType {
   node_id: string;
@@ -42,7 +44,7 @@ export default function CommitsPage() {
       .then((newData: CommitsType[]) => {
         setIsLoading(false);
         if (!Array.isArray(newData)) {
-          navigate("/does/not/exist");
+          navigate("/error");
         }
         if (newData.length > 0) {
           setData([...(data || []), ...newData]);
@@ -52,7 +54,7 @@ export default function CommitsPage() {
         }
       })
       .catch(() => {
-        navigate("/does/not/exist");
+        navigate("/error");
       });
   }, [currentPage, location]);
 
@@ -89,7 +91,7 @@ export default function CommitsPage() {
         </Grid>
         <Grid item xs={12}>
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table className={styles.table} aria-label="simple table">
               <TableBody>
                 {data.map((item) => {
                   const date = new Date(item.commit.author.date);
@@ -115,8 +117,12 @@ export default function CommitsPage() {
                     >
                       <TableCell>{`${formatedMonth} ${day}, ${year} at ${novotime}`}</TableCell>
                       <TableCell>
-                        <Link to={item.html_url} target="_blank">
-                          {item.commit.message}
+                        <Link href={item.html_url} target="_blank">
+                          <pre
+                            className={`text-ellipsis ${styles.commitMessage}`}
+                          >
+                            {item.commit.message}
+                          </pre>
                         </Link>
                       </TableCell>
                       <TableCell>{item.commit.author.name}</TableCell>
@@ -134,8 +140,8 @@ export default function CommitsPage() {
               alignItems: "center",
               justifyContent: "center",
               height: "100%",
-              width: '100%',    
-              marginTop: '1rem'
+              width: "100%",
+              marginTop: "1rem",
             }}
           >
             <Button

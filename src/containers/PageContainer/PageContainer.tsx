@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorPage from "pages/ErrorPage/ErrorPage";
 
 // Define theme settings
 const light = createTheme({
@@ -65,11 +67,12 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
         <>{children}</>
       ) : (
         <Box
+          p={4} 
           sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "100%",
+            height: "100%"
           }}
         >
           {children}
