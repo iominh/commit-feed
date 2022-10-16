@@ -28,7 +28,6 @@ function IndexPage() {
       )
         .then((res) => res.json())
         .then((res) => {
-          console.log(res);
           const newUsers = res.items.map((item: any, id: number) => {
             return {
               label: item.login,
@@ -56,16 +55,13 @@ function IndexPage() {
   };
 
   const onKeyDownUser = (e: any) => {
-    console.log(e.key);
     if (/\w/gi.test(e.target.value)) {
       setUserQuery(e.target.value);
     }
   };
-  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 300);
+  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 400);
 
   if (error) return <>An error has occurred: ${error || ""}</>;
-
-  console.log('render...', userNames, userQuery);
 
   return (
     <div ref={ref}>
