@@ -16,7 +16,9 @@ function IndexPage() {
   const [userNames, setUserNames] = useState([]);
   const [repoOptions, setRepoOptions] = useState([]);
   const [userQuery, setUserQuery] = useState("");
+  const [repoQuery, setRepoQuery] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { error, data } = useQuery(["user", userQuery], () => {
     if (!userQuery) return null;
@@ -38,12 +40,12 @@ function IndexPage() {
       });
   });
 
-  const repoQuery = useQuery(["repos", userQuery], () => {
+  const repoQueryResults = useQuery(["repos", userQuery], () => {
     if (!userQuery) return null;
     return fetch(`https://api.github.com/users/${userQuery}/repos`)
       .then((res) => res.json())
       .then((res) => {
-        const repos = res.items.map((item: any) => {
+        const repos = res.map((item: any) => {
           return {
             label: item.name,
           };
@@ -62,18 +64,33 @@ function IndexPage() {
       setUserQuery(e.target.value);
     }
   };
-  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 400);
+  const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 300);
+
+  const onKeyDownRepo = (e: any) => {
+    if (/\w/gi.test(e.target.value)) {
+      setRepoQuery(e.target.value);
+    }
+  };
+  const debouncedOnKeyDownRepo = useDebounce(onKeyDownRepo, 300);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    navigate(`/${userQuery}/${repoQuery}`);
+  }
 
   if (error) return <>An error has occurred: ${error || ""}</>;
 
   return (
     <div ref={ref}>
-      <FormGroup>
+      <form onSubmit={handleSubmit}>
         <Autocomplete
           disablePortal
           id="userInput"
           value={userQuery}
           onKeyDown={debouncedOnKeyDownUser}
+          onInputChange={(e: any) => {
+            console.log('keyodwn', e);
+          }}
           isOptionEqualToValue={(option: any, value: string) => {
             return option.label.includes(value);
           }}
@@ -83,12 +100,12 @@ function IndexPage() {
             <TextField {...params} label="Search User / Organization" />
           )}
         />
-        {repoOptions.length > 0 && (
+        {userQuery.length > 0 && repoOptions.length > 0 && (
           <Autocomplete
             disablePortal
             id="repoInput"
-            value={userQuery}
-            onKeyDown={debouncedOnKeyDownUser}
+            value={repoQuery}
+            onKeyDown={debouncedOnKeyDownRepo}
             isOptionEqualToValue={(option: any, value: string) => {
               return option.label.includes(value);
             }}
@@ -100,7 +117,7 @@ function IndexPage() {
           />
         )}
         {repoOptions.length > 0 && <button>Submit</button>}
-      </FormGroup>
+      </form>
     </div>
   );
 }
