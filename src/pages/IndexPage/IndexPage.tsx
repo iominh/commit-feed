@@ -1,24 +1,25 @@
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 function IndexPage() {
+  const ref = useRef(null);
+  const navigate = useNavigate();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('submit', e);
-  };
-
-  const handleUserChange = (e: React.FormEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    console.log(e);
-  };
-
-  const handleRepoChange = (e: React.FormEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    console.log(e);
+    if (ref.current) {
+      const element = ref.current as HTMLDivElement;
+      const userInput = element.querySelector('.userInput') as HTMLInputElement
+      const repoInput = element.querySelector('.repoInput') as HTMLInputElement;
+      navigate(`${userInput.value}/${repoInput.value}`);
+    }
   };
 
   return (
-    <div>
+    <div ref={ref}>
       <form onSubmit={handleSubmit}>
-        <input onChange={handleUserChange}></input>
-        <input onChange={handleRepoChange}></input>
+        <input className="userInput"></input>
+        <input className="repoInput"></input>
         <button>Submit</button>
       </form>
     </div>

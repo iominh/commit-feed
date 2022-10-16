@@ -5,7 +5,7 @@ function RepoPage() {
     let location = useLocation();
 
     useEffect(() => {
-        console.log(location);
+        console.log('repo page', location);
     }, [location])
 
     return <div>
