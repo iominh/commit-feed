@@ -127,7 +127,7 @@ export default function Feed() {
                   >
                     <TableCell>{`${formatedMonth} ${day}, ${year} at ${novotime}`}</TableCell>
                     <TableCell>
-                      <Link href={item.html_url} target="_blank">
+                      <Link to={item.html_url} target="_blank">
                         {item.commit.message}
                       </Link>
                     </TableCell>
