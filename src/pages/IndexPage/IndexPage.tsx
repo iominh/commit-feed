@@ -1,20 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import FormGroup from "@mui/material/FormGroup";
-import { useQuery } from "@tanstack/react-query";
 import useDebounce from "../../hooks/useDebounce";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { getUsers, getRepos } from "../../utils/api";
-
+import parse from "autosuggest-highlight/parse";
+import match from "autosuggest-highlight/match";
 
 function IndexPage() {
   const ref = useRef(null);
@@ -99,114 +93,130 @@ function IndexPage() {
   };
 
   return (
-    <div ref={ref}>
-      <Stack
-        component="form"
-        onSubmit={handleSubmit}
-        noValidate
-        autoComplete="off"
-        sx={{
-          height: "100%",
+    <Stack
+      ref={ref}
+      component="form"
+      onSubmit={handleSubmit}
+      noValidate
+      autoComplete="off"
+      sx={{
+        height: "100%",
+      }}
+      spacing={2}
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Autocomplete
+        disablePortal
+        autoComplete
+        autoHighlight
+        openOnFocus
+        noOptionsText={isLoadingUsers ? "Loading..." : "No options found"}
+        open={!isLoadingUsers && showUsers && users.length > 0}
+        onOpen={() => setShowUsers(true)}
+        onClose={() => setShowUsers(false)}
+        loading={isLoadingUsers}
+        id="userInput"
+        value={user}
+        options={users}
+        onInputChange={(e: any, newValue: any) => {
+          debouncedChangeHandler(newValue);
         }}
-        spacing={2}
-        justifyContent="center"
-        alignItems="center"
-      >
+        onChange={(e: any, newValue: any) => {
+          if (newValue) {
+            setSearchParams({ user: newValue || "" });
+            if (!isLoadingRepos) {
+              setIsLoadingRepos(true);
+              getRepos(newValue).then((data: any) => {
+                setIsLoadingRepos(false);
+                setRepos(data.map((item: { name: any }) => item.name));
+              });
+            }
+          } else {
+            setSearchParams({});
+            setUserError("");
+          }
+        }}
+        renderOption={(props, option: string, { inputValue }) => {
+          const matches = match(option, inputValue);
+          const parts = parse(option, matches);
+          return (
+            <li {...props}>
+              <div>
+                {parts.map((part, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      color: part.highlight ? "blue" : "inherit",
+                      fontWeight: part.highlight ? 700 : 400,
+                    }}
+                  >
+                    {part.text}
+                  </span>
+                ))}
+              </div>
+            </li>
+          );
+        }}
+        isOptionEqualToValue={(option: string, value: string) => {
+          return option.localeCompare(value) === 0;
+        }}
+        sx={{ width: 300 }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search User / Organization"
+            autoFocus
+            inputProps={{
+              ...params.inputProps,
+              endadornment: (
+                <>
+                  {isLoadingRepos ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+          />
+        )}
+      />
+
+      {Boolean(user && repos.length > 0) && (
         <Autocomplete
           disablePortal
           autoComplete
           autoHighlight
           openOnFocus
-          noOptionsText={isLoadingUsers ? 'Loading...' : 'No options found'}
-          open={!isLoadingUsers && showUsers && users.length > 0}
-          onOpen={() => setShowUsers(true)}
-          onClose={() => setShowUsers(false)}
-          loading={isLoadingUsers}
-          id="userInput"
-          value={user}
-          options={users}
-          onInputChange={(e: any, newValue: any) => {
-            debouncedChangeHandler(newValue);
-          }}
-          onChange={(e: any, newValue: any) => {
+          noOptionsText={isLoadingRepos ? "Loading..." : "No options found"}
+          open={!isLoadingRepos && showRepos && repos.length > 0}
+          id="repoInput"
+          value={repo}
+          onOpen={() => setShowRepos(true)}
+          onClose={() => setShowRepos(false)}
+          onChange={(_, newValue: string | null) => {
             if (newValue) {
-              setSearchParams({ user: newValue || "" });
-              if (!isLoadingRepos) {
-                setIsLoadingRepos(true);
-                getRepos(newValue).then((data: any) => {
-                  setIsLoadingRepos(false);
-                  setRepos(data.map((item: { name: any }) => item.name));
-                });
-              }
+              setSearchParams({ user, repo: newValue || "" });
             } else {
-              setSearchParams({});
-              setUserError("");
+              setSearchParams({ user });
             }
           }}
           isOptionEqualToValue={(option: string, value: string) => {
             return option.localeCompare(value) === 0;
           }}
+          options={repos}
           sx={{ width: 300 }}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search User / Organization"
-              autoFocus
-              inputProps={{
-                ...params.inputProps,
-                endadornment: (
-                  <>
-                    {isLoadingRepos ? (
-                      <CircularProgress color="inherit" size={20} />
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                  </>
-                ),
-              }}
-            />
+            <TextField {...params} label="Select Repo" />
           )}
         />
-
-        {Boolean(user && repos.length > 0) && (
-          <Autocomplete
-            disablePortal
-            autoComplete
-            autoHighlight
-            openOnFocus
-            noOptionsText={isLoadingRepos ? 'Loading...' : 'No options found'}
-            open={!isLoadingRepos && showRepos && repos.length > 0}
-            id="repoInput"
-            value={repo}
-            onOpen={() => setShowRepos(true)}
-            onClose={() => setShowRepos(false)}
-            onChange={(_, newValue: string | null) => {
-              if (newValue) {
-                setSearchParams({ user, repo: newValue || "" });
-              } else {
-                setSearchParams({ user });
-              }
-            }}
-            isOptionEqualToValue={(option: string, value: string) => {
-              return option.localeCompare(value) === 0;
-            }}
-            options={repos}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Select Repo" />
-            )}
-          />
-        )}
-        {Boolean(user && repos.length > 0) && (
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={Boolean(userError)}
-          >
-            submit
-          </Button>
-        )}
-      </Stack>
-    </div>
+      )}
+      {Boolean(user && repos.length > 0) && (
+        <Button type="submit" variant="contained" disabled={Boolean(userError)}>
+          submit
+        </Button>
+      )}
+    </Stack>
   );
 }
 
