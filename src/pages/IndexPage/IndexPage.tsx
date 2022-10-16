@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import FormGroup from "@mui/material/FormGroup";
@@ -19,7 +24,9 @@ function IndexPage() {
   const ref = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
-  let { user, repo } = useParams();
+  let [searchParams, setSearchParams] = useSearchParams();
+  const user = searchParams.get("user") || "";
+  const repo = searchParams.get("repo") || "";
 
   const [showUsers, setShowUsers] = useState(false);
   const [showRepos, setShowRepos] = useState(false);
@@ -54,18 +61,6 @@ function IndexPage() {
     }
   }, [users, showUsers, user, userError, repos]);
 
-  // const onKeyDownUser = (e: any) => {
-  //   if (/\w/gi.test(e.target.value)) {
-  //     setUserQuery(e.target.value);
-  //   }
-  // };
-  // const debouncedOnKeyDownUser = useDebounce(onKeyDownUser, 300);
-
-  // const onKeyDownRepo = (e: any) => {
-  //   if (/\w/gi.test(e.target.value)) {
-  //     setRepoQuery(e.target.value);
-  //   }
-  // };
   const handleChangeUser = React.useCallback(
     (value: string) => {
       if (!value.trim()) {
@@ -82,11 +77,11 @@ function IndexPage() {
 
         if (data.items.length === 0) {
           setUserError("User not found");
-          // if (user && repo) {
-          //   setUser(user);
-          // }
+          if (user && repo) {
+            setSearchParams({ user });
+          }
         } else if (user && !isLoadingRepos) {
-          // setSearchParams({ user: value, ...(repo ? { repo } : {}) });
+          setSearchParams({ user: value, ...(repo ? { repo } : {}) });
           setIsLoadingRepos(true);
           getRepos(newUsers[0]).then((data) => {
             setIsLoadingRepos(false);
@@ -125,12 +120,27 @@ function IndexPage() {
           autoComplete
           autoHighlight
           openOnFocus
-          loading={isLoadingRepos}
+          loading={isLoadingUsers}
           id="userInput"
           value={user}
           options={users}
           onInputChange={(e: any, newValue: any) => {
             debouncedChangeHandler(newValue);
+          }}
+          onChange={(e: any, newValue: any) => {
+            if (newValue) {
+              setSearchParams({ user: newValue || "" });
+              if (!isLoadingRepos) {
+                setIsLoadingRepos(true);
+                getRepos(newValue).then((data: any) => {
+                  setIsLoadingRepos(false);
+                  setRepos(data.map((item: { name: any }) => item.name));
+                });
+              }
+            } else {
+              setSearchParams({});
+              setUserError("");
+            }
           }}
           isOptionEqualToValue={(option: string, value: string) => {
             return option.localeCompare(value) === 0;
@@ -143,7 +153,7 @@ function IndexPage() {
               autoFocus
               inputProps={{
                 ...params.inputProps,
-                endAdornment: (
+                endadornment: (
                   <>
                     {isLoadingRepos ? (
                       <CircularProgress color="inherit" size={20} />
@@ -165,6 +175,13 @@ function IndexPage() {
             value={repo}
             onOpen={() => setShowRepos(true)}
             onClose={() => setShowRepos(false)}
+            onChange={(_, newValue: string | null) => {
+              if (newValue) {
+                setSearchParams({ user, repo: newValue || "" });
+              } else {
+                setSearchParams({ user });
+              }
+            }}
             isOptionEqualToValue={(option: string, value: string) => {
               return option.localeCompare(value) === 0;
             }}
