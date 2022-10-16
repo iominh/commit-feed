@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import Typography from "@mui/material/Typography";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -77,31 +77,18 @@ export default function CommitsPage() {
     setIsLoading(true);
   };
 
-  // useEffect(() => {
-  //   console.log("repo page", location);
-  //   // document.title = `${location.pathname ?? ""} - Commit Feed`;
-  // }, []);
-
   return (
     <PageContainer>
-      <Container maxWidth="xl">
-        <Stack
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-          }}
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-        >
+      <Grid container spacing={2} sx={{ mt: 9, p: 3 }}>
+        <Grid item xs={12}>
           <Typography variant="h3" component="div" gutterBottom>
             Commit Feed
           </Typography>
           <Typography variant="h6" component="div" gutterBottom>
             {`Showing results for ${user}/${repo}`}
           </Typography>
+        </Grid>
+        <Grid item xs={12}>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableBody>
@@ -140,29 +127,26 @@ export default function CommitsPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          {showButton && (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-              }}
+        </Grid>
+        {showButton && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
+            <Button
+              variant="contained"
+              onClick={handleOnClickLoadMore}
+              disabled={isLoading}
             >
-              <Button
-                variant="contained"
-                onClick={handleOnClickLoadMore}
-                disabled={isLoading}
-              >
-                Load More
-              </Button>
-            </Box>
-          )}
-          <Link to="/">
-            <Button variant="contained">Go Back</Button>
-          </Link>
-        </Stack>
-      </Container>
+              Load More
+            </Button>
+          </Box>
+        )}
+      </Grid>
     </PageContainer>
   );
 }

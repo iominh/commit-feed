@@ -94,7 +94,7 @@ function IndexPage() {
   };
 
   return (
-    <PageContainer>
+    <PageContainer centered>
       <Stack
         ref={ref}
         component="form"

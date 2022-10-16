@@ -11,20 +11,12 @@ import PageContainer from "./containers/PageContainer/PageContainer";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <PageContainer>
-        <IndexPage />
-      </PageContainer>
-    ),
+    element: <IndexPage />,
     errorElement: <ErrorPage />,
   },
   {
     path: "/:user/:repo",
-    element: (
-      <PageContainer>
-        <CommitsPage />
-      </PageContainer>
-    ),
+    element:  <CommitsPage />,
     errorElement: <ErrorPage />,
   },
 ]);
