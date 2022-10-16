@@ -14,10 +14,9 @@ function IndexPage() {
   const ref = useRef(null);
   const [userNames, setUserNames] = useState([]);
   const [userQuery, setUserQuery] = useState("");
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const { isLoading, error, data, isFetching } = useQuery(
+  const { isLoading, error } = useQuery(
     ["user", userQuery],
     () => {
       if (!userQuery) return null;
@@ -67,6 +66,8 @@ function IndexPage() {
   if (isLoading) return <div>Loading..."</div>;
   if (error) return <>An error has occurred: ${error || ""}</>;
 
+  console.log('render...', userNames, userQuery);
+
   return (
     <div ref={ref}>
       <Autocomplete
@@ -79,7 +80,9 @@ function IndexPage() {
         }}
         options={userNames}
         sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Username" />}
+        renderInput={(params) => (
+          <TextField {...params} label="Github Username" />
+        )}
       />
     </div>
   );
