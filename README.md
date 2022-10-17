@@ -11,6 +11,7 @@ with a "Load More" button at the bottom
 - Header with dark + light theme
 - Integration testing through Cypress
 - Unit testing through Jest
+- Scaffolded from Vite TypeScript
 
 A live version is available for testing at https://commit-feed-sage.vercel.app/
 
