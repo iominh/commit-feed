@@ -12,8 +12,9 @@ module.exports = {
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest",
   },
-
+  "testEnvironment": "jsdom",
   "moduleNameMapper": {
-    "@/(.*)": "<rootDir>/src/$1"
+    "@/(.*)": "<rootDir>/src/$1",
+    "\\.(css)$": "<rootDir>/assets/css/__mocks__/styleMock.js"
   },
 };

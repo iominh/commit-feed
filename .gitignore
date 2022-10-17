@@ -28,3 +28,4 @@ cypress/videos
 
 # Ignore jest artifacts
 coverage/
+__Snapshots__
