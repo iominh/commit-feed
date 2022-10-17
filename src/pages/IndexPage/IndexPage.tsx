@@ -13,6 +13,11 @@ import PageContainer from '@/containers/PageContainer/PageContainer';
 import { Typography } from '@mui/material';
 
 function IndexPage() {
+  const navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+  const user = searchParams.get('user') || '';
+  const repo = searchParams.get('repo') || '';
+
   const [showUsers, setShowUsers] = useState(false);
   const [showRepos, setShowRepos] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -22,11 +27,6 @@ function IndexPage() {
 
   const [users, setUsers] = useState<string[]>([]);
   const [repos, setRepos] = useState<string[]>([]);
-
-  const navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
-  const user = searchParams.get('user') || '';
-  const repo = searchParams.get('repo') || '';
 
   useEffect(() => {
     if (
