@@ -5,6 +5,7 @@ const { compilerOptions } = require("./tsconfig");
 
 module.exports = {
   roots: ["<rootDir>/src"],
+  setupFiles: ['./test/utils/setupJestMock.js'],
   testMatch: [
     "**/__tests__/**/*.+(ts|tsx|js)",
     "**/?(*.)+(spec|test).+(ts|tsx|js)",
