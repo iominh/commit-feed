@@ -1,4 +1,4 @@
-import { Link, useRouteError } from "react-router-dom";
+import { useRouteError } from "react-router-dom";
 import PageContainer from "@/containers/PageContainer/PageContainer";
 import { Box, Button } from "@mui/material";
 export default function ErrorPage() {

@@ -6,4 +6,6 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => ({
     to: () => {},
   }),
+  useRouteError: () => ({
+  })
 }));
