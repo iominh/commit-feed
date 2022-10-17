@@ -141,6 +141,7 @@ function IndexPage() {
           noOptionsText={isLoadingUsers ? "Loading..." : "No options found"}
           open={!isLoadingUsers && showUsers && !showRepos && users.length > 0}
           onOpen={() => setShowUsers(true)}
+          onClose={() => setShowUsers(false)}
           loading={isLoadingUsers}
           id="userInput"
           value={user}
