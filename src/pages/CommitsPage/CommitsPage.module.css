@@ -2,6 +2,10 @@
     display: flex;
 }
 
+table th {
+    font-weight: bold;
+}
+
 @media screen and (min-width: 768px) {
     .commitMessage {
         max-width: 600px;

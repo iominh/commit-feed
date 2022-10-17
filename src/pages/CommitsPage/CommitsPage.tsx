@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import Typography from "@mui/material/Typography";
-import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -15,8 +9,14 @@ import Link from "@mui/material/Link";
 import { getCommits } from "@/utils/api";
 import PageContainer from "@/containers/PageContainer/PageContainer";
 import styles from "./CommitsPage.module.css";
-import { CommitsResponse, CommitsType } from "@/types/CommitsType";
+import { CommitsType } from "@/types/CommitsType";
 import { TableHead } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import Typography from "@mui/material/Typography";
+import TableRow from "@mui/material/TableRow";
 
 export default function CommitsPage() {
   const location = useLocation();
@@ -52,9 +52,14 @@ export default function CommitsPage() {
       });
   }, [currentPage, location]);
 
+  const handleOnClickLoadMore = () => {
+    setCurrentPage(currentPage + 1);
+    setIsLoading(true);
+  };
+
   if (error) throw error;
 
-  if (data.length === 0) {
+  if (isLoading) {
     return (
       <Box
         sx={{
@@ -69,11 +74,6 @@ export default function CommitsPage() {
     );
   }
 
-  const handleOnClickLoadMore = () => {
-    setCurrentPage(currentPage + 1);
-    setIsLoading(true);
-  };
-
   return (
     <PageContainer>
       <Grid container spacing={2} sx={{ mt: 9, p: 3 }}>
@@ -87,7 +87,7 @@ export default function CommitsPage() {
             <Table className={styles.table} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{fontWeight: 'bold'}}>Date</TableCell>
+                  <TableCell>Date</TableCell>
                   <TableCell>Commit Message</TableCell>
                   <TableCell>Username</TableCell>
                 </TableRow>
