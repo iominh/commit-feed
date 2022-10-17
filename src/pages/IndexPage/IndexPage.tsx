@@ -88,7 +88,6 @@ function IndexPage() {
           setUsers(newUsers);
 
           if (data.items.length === 0) {
-            handleError(new Error("User not found"));
             if (user && repo) {
               setSearchParams({ user });
             }
@@ -185,14 +184,14 @@ function IndexPage() {
             return option.localeCompare(value) === 0;
           }}
           sx={{ width: 300 }}
-          renderInput={(params) => (
+          renderInput={(params: any) => (
             <TextField
               {...params}
-              label="Search User / Organization"
+              label="Search User or Organization"
               autoFocus
-              inputProps={{
-                ...params.inputProps,
-                endadornment: (
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
                   <>
                     {isLoadingRepos ? (
                       <CircularProgress color="inherit" size={20} />
@@ -232,8 +231,8 @@ function IndexPage() {
               <TextField
                 {...params}
                 label="Select Repo"
-                inputProps={{
-                  ...params.inputProps,
+                InputProps={{
+                  ...params.InputProps,
                   endAdornment: (
                     <>
                       {isLoadingRepos ? (
@@ -249,7 +248,7 @@ function IndexPage() {
         )}
         {Boolean(user && repos.length > 0) && (
           <Button type="submit" variant="contained" disabled={Boolean(error)}>
-            Submit
+            View Commit Feed
           </Button>
         )}
       </Stack>
