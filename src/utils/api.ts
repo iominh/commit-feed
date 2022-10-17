@@ -1,9 +1,8 @@
-import { ReposType } from "@/types/ReposType";
 import { UsersType } from "@/types/UsersType";
 import { CommitsType } from "@/types/CommitsType";
 
 // Set token to avoid rate limiting
-const TOKEN_GITHUB = null;
+const TOKEN_GITHUB = "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";
 let options = {};
 if (TOKEN_GITHUB) {
   options = {

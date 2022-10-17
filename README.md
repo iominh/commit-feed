@@ -1,31 +1,39 @@
 # Readme
 
 This is Minh Nguyen's homework solution for Chronosphere
-as of Oct 16, 2022.
+as of Oct 16, 2022. It implements the following:
+
+- React Router integration for http://localhost/:user/:repo
+and invalid routes
+- Autocomplete for user and repo names with animation through
+- A table of commits showing date, author, message, and URL
+with a "Load More" button at the bottom
+- Header with dark + light theme
+- Integration testing through Cypress
+- Unit testing through Jest
 
 A live version is available for testing at https://commit-feed-sage.vercel.app/
 
-# Testing
+## Quickstart
 
-## Local
+```
+yarn install
+yarn dev
+```
+
+## Testing
+
+### Local
 
 Run `yarn test` to run the Jest unit tests
 
-Run `yarn cypress:run` to run the Cypress integration tests in headless mode
+Run `yarn cypress:run` to run the Cypress E2E tests in headless mode
 
-Run `yarn cypress:open` to open Cypress
+Run `yarn cypress:open` to open Cypress E2E testing
 
-## Staging / Production
+### Staging / Production
 
 In a staging environment, a github action
 is executed (see .github/workflows/cypress.yml)
 that copies the JSON from the repo's CYPRESS_ENV_CI
 secret and uses it for the tests.
-
-# PAT
-
-Generate personal access token:
-- https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
-- https://docs.github.com/en/rest#oauth2-token-sent-in-a-header
-
-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
