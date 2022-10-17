@@ -75,7 +75,7 @@ export default function CommitsPage() {
 
   return (
     <PageContainer>
-      <Grid container spacing={2} sx={{ mt: 9, p: 3 }}>
+      <Grid container spacing={2} sx={{ mt: 8, p: 3 }}>
         <Grid item xs={12}>
           <Typography variant="h6" component="div" gutterBottom>
             {`Commits for ${user}/${repo}`}
