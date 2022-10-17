@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import useDebounce from '@/hooks/useDebounce';
-import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { getUsers, getRepos } from '@/utils/api';
-import parse from 'autosuggest-highlight/parse';
-import match from 'autosuggest-highlight/match';
 import PageContainer from '@/containers/PageContainer/PageContainer';
 import { Typography } from '@mui/material';
+import { renderInput, renderOption } from '@/utils/select-helpers';
 
 function IndexPage() {
   const navigate = useNavigate();
@@ -118,11 +115,11 @@ function IndexPage() {
       <Stack
         component='form'
         onSubmit={handleSubmit}
-        spacing={2}
+        spacing={4}
         justifyContent='center'
         alignItems='center'
       >
-        <Typography variant='h4' component='div' gutterBottom>
+        <Typography variant='h4' component='div'>
           Github Commit Search
         </Typography>
         <Autocomplete
@@ -153,48 +150,12 @@ function IndexPage() {
               setError(null);
             }
           }}
-          renderOption={(props, option: string, { inputValue }) => {
-            const matches = match(option, inputValue);
-            const parts = parse(option, matches);
-            return (
-              <li {...props}>
-                <div>
-                  {parts.map((part, index) => (
-                    <span
-                      key={index}
-                      style={{
-                        fontWeight: part.highlight ? 700 : 400,
-                      }}
-                    >
-                      {part.text}
-                    </span>
-                  ))}
-                </div>
-              </li>
-            );
-          }}
+          renderOption={renderOption}
           isOptionEqualToValue={(option: string, value: string) => {
             return option.localeCompare(value) === 0;
           }}
           sx={{ width: 300 }}
-          renderInput={(params: any) => (
-            <TextField
-              {...params}
-              label='Search User or Organization'
-              autoFocus
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <>
-                    {isLoadingRepos ? (
-                      <CircularProgress color='inherit' size={20} />
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                  </>
-                ),
-              }}
-            />
-          )}
+          renderInput={renderInput(isLoadingRepos, 'Search User or Organization')}
         />
 
         {Boolean(user && repos.length > 0) && (
@@ -215,28 +176,13 @@ function IndexPage() {
                 setSearchParams({ user });
               }
             }}
+            renderOption={renderOption}
             isOptionEqualToValue={(option: string, value: string) => {
               return option.localeCompare(value) === 0;
             }}
             options={repos}
             sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label='Select Repo'
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <>
-                      {isLoadingRepos ? (
-                        <CircularProgress color='inherit' size={20} />
-                      ) : null}
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
-                }}
-              />
-            )}
+            renderInput={renderInput(isLoadingRepos, 'Select Repo')}
           />
         )}
         {Boolean(user && repos.length > 0) && (
