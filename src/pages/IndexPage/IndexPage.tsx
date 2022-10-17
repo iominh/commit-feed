@@ -70,15 +70,15 @@ function IndexPage() {
   };
 
   const handleChangeUser = useCallback(
-    (value: string) => {
-      if (!value.trim()) {
+    (newUser: string) => {
+      if (!newUser.trim()) {
         setUsers([]);
         return null;
       }
 
       setIsLoadingUsers(true);
 
-      getUsers(value)
+      getUsers(newUser)
         .then((data) => {
           if (data.message) {
             handleError(new Error(data.message));
@@ -92,7 +92,7 @@ function IndexPage() {
               setSearchParams({ user });
             }
           } else if (user && !isLoadingRepos) {
-            setSearchParams({ user: value, ...(repo ? { repo } : {}) });
+            setSearchParams({ user: newUser, ...(repo ? { repo } : {}) });
             setIsLoadingRepos(true);
             loadRepos(newUsers[0]);
           }
@@ -247,7 +247,7 @@ function IndexPage() {
           />
         )}
         {Boolean(user && repos.length > 0) && (
-          <Button type="submit" variant="contained" disabled={Boolean(error)}>
+          <Button type="submit" variant="contained" disabled={Boolean(error) || !user || !repo}>
             View Commit Feed
           </Button>
         )}
