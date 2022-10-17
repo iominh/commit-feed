@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import useDebounce from "@/hooks/useDebounce";
@@ -13,11 +13,6 @@ import PageContainer from "@/containers/PageContainer/PageContainer";
 import { Typography } from "@mui/material";
 
 function IndexPage() {
-  const navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
-  const user = searchParams.get("user") || "";
-  const repo = searchParams.get("repo") || "";
-
   const [showUsers, setShowUsers] = useState(false);
   const [showRepos, setShowRepos] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -27,6 +22,11 @@ function IndexPage() {
 
   const [users, setUsers] = useState<string[]>([]);
   const [repos, setRepos] = useState<string[]>([]);
+
+  const navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+  const user = searchParams.get("user") || "";
+  const repo = searchParams.get("repo") || "";
 
   useEffect(() => {
     if (
@@ -99,9 +99,8 @@ function IndexPage() {
           throw e;
         });
     },
-    [isLoadingRepos, repo, user]
+    [isLoadingRepos, setSearchParams, repo, user]
   );
-
   const debouncedChangeHandler = useDebounce(handleChangeUser, 300);
 
   const handleSubmit = (e: any) => {
@@ -111,6 +110,7 @@ function IndexPage() {
     }
   };
 
+  // throw error to ErrorPage
   if (error) throw error;
 
   return (
