@@ -118,11 +118,6 @@ function IndexPage() {
       <Stack
         component='form'
         onSubmit={handleSubmit}
-        noValidate
-        autoComplete='off'
-        sx={{
-          height: '100%',
-        }}
         spacing={2}
         justifyContent='center'
         alignItems='center'
