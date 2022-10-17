@@ -135,9 +135,8 @@ function IndexPage() {
           autoHighlight
           openOnFocus
           noOptionsText={isLoadingUsers ? "Loading..." : "No options found"}
-          open={!isLoadingUsers && showUsers && users.length > 0}
+          open={!isLoadingUsers && showUsers && !showRepos && users.length > 0}
           onOpen={() => setShowUsers(true)}
-          onClose={() => setShowUsers(false)}
           loading={isLoadingUsers}
           id="userInput"
           value={user}
@@ -225,7 +224,21 @@ function IndexPage() {
             options={repos}
             sx={{ width: 300 }}
             renderInput={(params) => (
-              <TextField {...params} label="Select Repo" />
+              <TextField
+                {...params}
+                label="Select Repo"
+                inputProps={{
+                  ...params.inputProps,
+                  endadornment: (
+                    <>
+                      {isLoadingRepos ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
             )}
           />
         )}
