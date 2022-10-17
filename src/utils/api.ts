@@ -23,7 +23,6 @@ export function getRepos(user: string) {
 }
 
 export function getCommits(user: string, repo: string, page: number = 1) {
-  console.log({ TOKEN_GITHUB });
   return fetch(
     `https://api.github.com/repos/${user}/${repo}/commits?page=${page}`,
     options

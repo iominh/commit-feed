@@ -21,6 +21,7 @@
       "@/containers/*": ["containers/*"],
       "@/hooks/*": ["hooks/*"],
       "@/pages/*": ["pages/*"],
+      "@/types/*": ["types/*"],
       "@/utils/*": ["utils/*"]
     }
   },

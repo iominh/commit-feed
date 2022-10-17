@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "@/pages/ErrorPage/ErrorPage";
 import IndexPage from "@/pages/IndexPage/IndexPage";
 import CommitsPage from "@/pages/CommitsPage/CommitsPage";
-import "@fontsource/roboto";
+import "@fontsource/roboto"; // default font for MUI
 import "./index.css";
 
 const router = createBrowserRouter([

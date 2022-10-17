@@ -1,3 +1,6 @@
+/**
+ * Limit the rate of execution for a function
+ */
 const useDebounce = (func: any, milliseconds: number) => {
   const time = milliseconds || 400;
   let timer: NodeJS.Timeout;

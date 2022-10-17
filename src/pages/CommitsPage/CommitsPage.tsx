@@ -13,21 +13,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import { getCommits } from "../../utils/api";
+import { getCommits } from "@/utils/api";
 import PageContainer from "@/containers/PageContainer/PageContainer";
 import styles from './CommitsPage.module.css';
-
-interface CommitsType {
-  node_id: string;
-  html_url: string;
-  commit: {
-    message: string;
-    author: {
-      name: string;
-      date: string;
-    };
-  };
-}
+import { CommitsType } from "@/types/CommitsType";
 
 export default function CommitsPage() {
   const location = useLocation();
