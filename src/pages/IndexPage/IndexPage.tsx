@@ -80,7 +80,7 @@ function IndexPage() {
       getUsers(value)
         .then((data) => {
           if (data.message) {
-            handleError(data);
+            handleError(new Error(data.message));
           }
           setIsLoadingUsers(false);
           const newUsers = data.items.map((item: { login: any }) => item.login);

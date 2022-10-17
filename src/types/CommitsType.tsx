@@ -22,5 +22,4 @@ export interface CommitsType {
       payload: string | null;
     }
   };
-
 }
