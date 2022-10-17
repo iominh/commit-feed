@@ -2,7 +2,15 @@ import { UsersType } from "@/types/UsersType";
 import { CommitsType } from "@/types/CommitsType";
 
 // Set token to avoid rate limiting
+const TOKEN_GITHUB = "";
 let options = {};
+if (TOKEN_GITHUB) {
+  options = {
+    headers: {
+      Authorization: `token ${TOKEN_GITHUB}`,
+    },
+  };
+}
 
 export function getUsers(query: string): Promise<UsersType> {
   return fetch(`https://api.github.com/search/users?q=${query}`, options).then(
