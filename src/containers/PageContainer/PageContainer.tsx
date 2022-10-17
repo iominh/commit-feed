@@ -33,8 +33,8 @@ export interface AppProps {
 }
 
 const PageContainer = ({ children, centered = false }: AppProps) => {
-  // Use light theme by default
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  // Use dark theme by default
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
 
   const updateHtmlThemeClass = (theme: string) => {
     if (theme === "dark") {
@@ -55,7 +55,7 @@ const PageContainer = ({ children, centered = false }: AppProps) => {
   };
 
   useEffect(() => {
-    const existingPreference = localStorage.getItem("theme") ?? "light";
+    const existingPreference = localStorage.getItem("theme") ?? "dark";
     if (existingPreference) {
       setIsDarkTheme(existingPreference === "dark");
     }

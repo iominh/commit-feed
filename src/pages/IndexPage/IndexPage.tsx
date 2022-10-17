@@ -2,14 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import useDebounce from "../../hooks/useDebounce";
+import useDebounce from "@/hooks/useDebounce";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { getUsers, getRepos } from "../../utils/api";
+import { getUsers, getRepos } from "@/utils/api";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import PageContainer from "@/containers/PageContainer/PageContainer";
+import { Typography } from "@mui/material";
 
 function IndexPage() {
   const ref = useRef(null);
@@ -129,6 +130,9 @@ function IndexPage() {
         justifyContent="center"
         alignItems="center"
       >
+        <Typography variant="h4" component="div" gutterBottom>
+          Github Commit Search
+        </Typography>
         <Autocomplete
           disablePortal
           autoComplete
@@ -229,7 +233,7 @@ function IndexPage() {
                 label="Select Repo"
                 inputProps={{
                   ...params.inputProps,
-                  endadornment: (
+                  endAdornment: (
                     <>
                       {isLoadingRepos ? (
                         <CircularProgress color="inherit" size={20} />
