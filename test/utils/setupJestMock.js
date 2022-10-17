@@ -6,6 +6,11 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => ({
     to: () => {},
   }),
-  useRouteError: () => ({
-  })
+  useRouteError: () => ({}),
+}));
+
+const MOCK_PRICES = [50, 47, 53, 50, 49, 51, 52];
+
+global.fetch = jest.fn(() => Promise.resolve({
+    json: () => Promise.resolve(MOCK_PRICES)
 }));
