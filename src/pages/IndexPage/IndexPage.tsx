@@ -13,8 +13,6 @@ import PageContainer from "@/containers/PageContainer/PageContainer";
 import { Typography } from "@mui/material";
 
 function IndexPage() {
-  const ref = useRef(null);
-  const location = useLocation();
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
   const user = searchParams.get("user") || "";
@@ -31,17 +29,6 @@ function IndexPage() {
   const [repos, setRepos] = useState<string[]>([]);
 
   useEffect(() => {
-    document.title = `Commit Feed`;
-    if (user && error && users.length > 0) {
-      setError(null);
-    }
-
-    if (repos.length > 0 && error) {
-      setRepos([]);
-    }
-  }, [location, user, error, users, repos]);
-
-  useEffect(() => {
     if (
       !error &&
       user &&
@@ -51,7 +38,18 @@ function IndexPage() {
     ) {
       setShowUsers(true);
     }
-  }, [users, showUsers, user, error, repos]);
+  }, [error, user, users, showUsers, repos]);
+
+  useEffect(() => {
+    document.title = `Commit Feed`;
+    if (user && error && users.length > 0) {
+      setError(null);
+    }
+
+    if (repos.length > 0 && error) {
+      setRepos([]);
+    }
+  }, [user, error, users, repos]);
 
   const handleError = (error: Error) => {
     setError(error);
@@ -103,6 +101,7 @@ function IndexPage() {
     },
     [isLoadingRepos, repo, user]
   );
+
   const debouncedChangeHandler = useDebounce(handleChangeUser, 300);
 
   const handleSubmit = (e: any) => {
@@ -117,7 +116,6 @@ function IndexPage() {
   return (
     <PageContainer centered>
       <Stack
-        ref={ref}
         component="form"
         onSubmit={handleSubmit}
         noValidate
@@ -145,15 +143,15 @@ function IndexPage() {
           id="userInput"
           value={user}
           options={users}
-          onInputChange={(e: any, newValue: any) => {
-            debouncedChangeHandler(newValue);
+          onInputChange={(e: any, newInputValue: any) => {
+            debouncedChangeHandler(newInputValue);
           }}
-          onChange={(e: any, newValue: any) => {
-            if (newValue) {
-              setSearchParams({ user: newValue || "" });
+          onChange={(e: any, newUser: any) => {
+            if (newUser) {
+              setSearchParams({ user: newUser || "" });
               if (!isLoadingRepos) {
                 setIsLoadingRepos(true);
-                loadRepos(newValue);
+                loadRepos(newUser);
               }
             } else {
               setSearchParams({});
@@ -215,9 +213,9 @@ function IndexPage() {
             value={repo}
             onOpen={() => setShowRepos(true)}
             onClose={() => setShowRepos(false)}
-            onChange={(_, newValue: string | null) => {
-              if (newValue) {
-                setSearchParams({ user, repo: newValue || "" });
+            onChange={(_, newRepo: string | null) => {
+              if (newRepo) {
+                setSearchParams({ user, repo: newRepo || "" });
               } else {
                 setSearchParams({ user });
               }
@@ -247,7 +245,11 @@ function IndexPage() {
           />
         )}
         {Boolean(user && repos.length > 0) && (
-          <Button type="submit" variant="contained" disabled={Boolean(error) || !user || !repo}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={Boolean(error) || !user || !repo}
+          >
             View Commit Feed
           </Button>
         )}
