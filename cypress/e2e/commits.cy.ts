@@ -5,7 +5,7 @@ describe("Commits Page", () => {
     cy.visit(
       `${Cypress.env("BASE_URL")}/EbookFoundation/free-programming-books`
     );
-    cy.get("table").find("tr").should("have.length", 30);
+    cy.get("table").find("tr").should("have.length", 31);
   });
 
   it("changes theme", () => {
@@ -16,14 +16,14 @@ describe("Commits Page", () => {
     cy.visit(
       `${Cypress.env("BASE_URL")}/EbookFoundation/free-programming-books`
     );
-    cy.get("table").find("tr").should("have.length", 30);
+    cy.get("table").find("tr").should("have.length", 31);
     cy.contains("Load More").click();
-    cy.get("table").find("tr").should("have.length", 60);
+    cy.get("table").find("tr").should("have.length", 61);
   });
 
   it("goes to root after clicking to top left nav", () => {
     cy.visit(`${Cypress.env("BASE_URL")}/EbookFoundation/free-programming-books`);
-    cy.get('table').find('tr').should('have.length', 30)
+    cy.get('table').find('tr').should('have.length', 31)
   });
 
 });

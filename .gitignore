@@ -25,6 +25,7 @@ dist-ssr
 
 # Ignore cypress artifacts
 cypress/videos
+cypress/screenshots
 
 # Ignore jest artifacts
 coverage/

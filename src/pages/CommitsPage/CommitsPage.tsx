@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -20,6 +20,7 @@ import TableRow from "@mui/material/TableRow";
 
 export default function CommitsPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user = "", repo = "" } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState<Array<CommitsType>>([]);
@@ -29,7 +30,7 @@ export default function CommitsPage() {
 
   const handleError = (error: Error) => {
     setError(error);
-    throw error;
+    navigate('/error');
   };
 
   useEffect(() => {
@@ -56,8 +57,6 @@ export default function CommitsPage() {
     setCurrentPage(currentPage + 1);
     setIsLoading(true);
   };
-
-  if (error) throw error;
 
   if (isLoading) {
     return (
