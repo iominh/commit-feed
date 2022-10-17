@@ -35,3 +35,13 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add('testTheme', () => {
+    cy.visit(Cypress.env("BASE_URL"));
+
+    // click "toggle" button
+    cy.contains("Toggle").click();
+
+    // check that 'dark' class exists on html root
+    cy.get("html").should("have.class", "dark").and("not.have.class", "light");
+})

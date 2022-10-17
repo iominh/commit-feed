@@ -6,5 +6,9 @@ describe("Error Page", () => {
       cy.visit(`${Cypress.env('BASE_URL')}/invalid/path`);
       cy.url().should('include', '/error');
     });
+
+    it("changes theme", () => {
+      cy.testTheme()
+    });
   });
   
