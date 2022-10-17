@@ -3,6 +3,7 @@
 This is Minh Nguyen's homework solution for Chronosphere
 as of Oct 16, 2022. It implements the following:
 
+- Pagespeed score of 97 for mobile and 100 for desktop
 - React Router integration for http://localhost/:user/:repo
 and invalid routes
 - Autocomplete for user and repo names with animation through

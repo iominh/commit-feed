@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import useDebounce from "@/hooks/useDebounce";
-import CircularProgress from "@mui/material/CircularProgress";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import { getUsers, getRepos } from "@/utils/api";
-import parse from "autosuggest-highlight/parse";
-import match from "autosuggest-highlight/match";
-import PageContainer from "@/containers/PageContainer/PageContainer";
-import { Typography } from "@mui/material";
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import useDebounce from '@/hooks/useDebounce';
+import CircularProgress from '@mui/material/CircularProgress';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import { getUsers, getRepos } from '@/utils/api';
+import parse from 'autosuggest-highlight/parse';
+import match from 'autosuggest-highlight/match';
+import PageContainer from '@/containers/PageContainer/PageContainer';
+import { Typography } from '@mui/material';
 
 function IndexPage() {
   const [showUsers, setShowUsers] = useState(false);
@@ -25,8 +25,8 @@ function IndexPage() {
 
   const navigate = useNavigate();
   let [searchParams, setSearchParams] = useSearchParams();
-  const user = searchParams.get("user") || "";
-  const repo = searchParams.get("repo") || "";
+  const user = searchParams.get('user') || '';
+  const repo = searchParams.get('repo') || '';
 
   useEffect(() => {
     if (
@@ -116,18 +116,18 @@ function IndexPage() {
   return (
     <PageContainer centered>
       <Stack
-        component="form"
+        component='form'
         onSubmit={handleSubmit}
         noValidate
-        autoComplete="off"
+        autoComplete='off'
         sx={{
-          height: "100%",
+          height: '100%',
         }}
         spacing={2}
-        justifyContent="center"
-        alignItems="center"
+        justifyContent='center'
+        alignItems='center'
       >
-        <Typography variant="h4" component="div" gutterBottom>
+        <Typography variant='h4' component='div' gutterBottom>
           Github Commit Search
         </Typography>
         <Autocomplete
@@ -135,12 +135,12 @@ function IndexPage() {
           autoComplete
           autoHighlight
           openOnFocus
-          noOptionsText={isLoadingUsers ? "Loading..." : "No options found"}
+          noOptionsText={isLoadingUsers ? 'Loading...' : 'No options found'}
           open={!isLoadingUsers && showUsers && !showRepos && users.length > 0}
           onOpen={() => setShowUsers(true)}
           onClose={() => setShowUsers(false)}
           loading={isLoadingUsers}
-          id="userInput"
+          id='userInput'
           value={user}
           options={users}
           onInputChange={(e: any, newInputValue: any) => {
@@ -148,7 +148,7 @@ function IndexPage() {
           }}
           onChange={(e: any, newUser: any) => {
             if (newUser) {
-              setSearchParams({ user: newUser || "" });
+              setSearchParams({ user: newUser || '' });
               if (!isLoadingRepos) {
                 setIsLoadingRepos(true);
                 loadRepos(newUser);
@@ -185,14 +185,14 @@ function IndexPage() {
           renderInput={(params: any) => (
             <TextField
               {...params}
-              label="Search User or Organization"
+              label='Search User or Organization'
               autoFocus
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
                   <>
                     {isLoadingRepos ? (
-                      <CircularProgress color="inherit" size={20} />
+                      <CircularProgress color='inherit' size={20} />
                     ) : null}
                     {params.InputProps.endAdornment}
                   </>
@@ -207,15 +207,15 @@ function IndexPage() {
             autoComplete
             autoHighlight
             openOnFocus
-            noOptionsText={isLoadingRepos ? "Loading..." : "No options found"}
+            noOptionsText={isLoadingRepos ? 'Loading...' : 'No options found'}
             open={!isLoadingRepos && showRepos && repos.length > 0}
-            id="repoInput"
+            id='repoInput'
             value={repo}
             onOpen={() => setShowRepos(true)}
             onClose={() => setShowRepos(false)}
             onChange={(_, newRepo: string | null) => {
               if (newRepo) {
-                setSearchParams({ user, repo: newRepo || "" });
+                setSearchParams({ user, repo: newRepo || '' });
               } else {
                 setSearchParams({ user });
               }
@@ -228,13 +228,13 @@ function IndexPage() {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Select Repo"
+                label='Select Repo'
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
                     <>
                       {isLoadingRepos ? (
-                        <CircularProgress color="inherit" size={20} />
+                        <CircularProgress color='inherit' size={20} />
                       ) : null}
                       {params.InputProps.endAdornment}
                     </>
@@ -246,8 +246,8 @@ function IndexPage() {
         )}
         {Boolean(user && repos.length > 0) && (
           <Button
-            type="submit"
-            variant="contained"
+            type='submit'
+            variant='contained'
             disabled={Boolean(error) || !user || !repo}
           >
             View Commit Feed
