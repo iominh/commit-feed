@@ -1,14 +1,10 @@
 .commitMessage {
-    max-width: 25%;
+    display: flex;
 }
 
-.table {
-    width: 100%;
-}
-
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 768px) {
     .commitMessage {
-        width: 40rem;
+        max-width: 600px;
     }
 
     .table {

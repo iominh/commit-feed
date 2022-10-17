@@ -1,3 +1,5 @@
+import { ErrorType } from "./ErrorType";
+
 export interface UserItem {
   login: string;
   id: number;
@@ -20,12 +22,8 @@ export interface UserItem {
   score: number;
 }
 
-export interface UsersType {
+export interface UsersType extends ErrorType {
   total_count: number;
   incomplete_results: boolean;
   items: UserItem[];
-
-  // Optional fields that may appear for errors
-  message?: string;
-  name?: string;
 }

@@ -1,3 +1,5 @@
+import { ErrorType } from "./ErrorType";
+
 export interface CommitsType {
   sha: string;
   node_id: string;
@@ -23,3 +25,5 @@ export interface CommitsType {
     }
   };
 }
+
+export interface CommitsResponse extends CommitsType, ErrorType {}
